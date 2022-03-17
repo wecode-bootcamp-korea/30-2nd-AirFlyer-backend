@@ -15,6 +15,7 @@ class FlightSchedule(TimeStampModel):
 
 class Planet(TimeStampModel):
     name = models.CharField(max_length=45)
+    code = models.CharField(max_length=45)
 
     class Meta:
         db_table = 'planets'
@@ -30,7 +31,7 @@ class FlightSeat(TimeStampModel):
     seat_availability = models.IntegerField()
     flight = models.ForeignKey('flights.Flight', on_delete=models.CASCADE)
     seat   = models.ForeignKey('flights.Seat', on_delete=models.CASCADE)
-
+    
     class Meta:
         db_table = 'flight_seats'
 

@@ -5,6 +5,7 @@ class User(TimeStampModel):
     kakao_id       = models.BigIntegerField()
     kakao_nickname = models.CharField(max_length=45)
     email          = models.EmailField(max_length=200)
+    mileage        = models.IntegerField()
 
     class Meta:
         db_table = 'users'
@@ -25,6 +26,6 @@ class PassengerInformation(TimeStampModel):
     reservation     = models.ForeignKey('users.Reservation', on_delete=models.CASCADE)
     flight_schedule = models.ForeignKey('flights.FlightSchedule', on_delete=models.CASCADE)
     seat            = models.ForeignKey('flights.Seat', on_delete=models.CASCADE)
-
+    
     class Meta:
         db_table = 'passenger_informations'
