@@ -9,10 +9,11 @@ from my_settings  import SECRET_KEY, ALGORITHM
 def login_decorator(func):
     @wraps(func)
     def wrapper(self, request, *args, **kwargs):
-        try:
+        try:    
             access_token = request.headers.get('Authorization', None)
             payload      = jwt.decode(access_token, SECRET_KEY, ALGORITHM)
-            user         = User.objects.get(id = payload["user"])
+            user         = User.objects.get(id = payload["user_id"])
+            
             request.user = user
             
             return func(self, request, *args, **kwargs)
