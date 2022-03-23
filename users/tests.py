@@ -96,6 +96,7 @@ class socialSigninTest(TestCase):
 
 
 class ReservationTest(TestCase):
+    maxDiff = None
     def setUp(self):                        
         User.objects.create(
             id              = 1,
@@ -114,23 +115,23 @@ class ReservationTest(TestCase):
             )
 
         Seat.objects.create(
-            id = 1,
+            id   = 1,
             type = "이코노미",
             price_ratio = 100
             )
         Seat.objects.create(
-            id = 2,
+            id   = 2,
             type = "비즈니스",
             price_ratio = 150
             )
         
         Flight.objects.create(
-            id  = 1,
-            name="출퇴근 우주선"
+            id   = 1,
+            name ="출퇴근 우주선"
             )
         Flight.objects.create(
-            id = 2,
-            name="초호화 우주선"
+            id   = 2,
+            name ="초호화 우주선"
             )
        
         departure_datetime = datetime.strptime('2023-03-18 9:00:00', '%Y-%m-%d %H:%M:%S')
@@ -171,7 +172,6 @@ class ReservationTest(TestCase):
                         "gender"             : "남" , 
                         "email"              : "email1@naver.com", 
                         "birth_date"         : "1984.08.04", 
-                        "user_id"            : 1, 
                         "flight_schedule_id" : 1 ,
                         "seat_name"          : "이코노미"
                     },
@@ -181,7 +181,6 @@ class ReservationTest(TestCase):
                         "gender"             : "여" , 
                         "email"              : "email2@naver.com",
                         "birth_date"         : "1984.08.04",
-                        "user_id"            : 1,
                         "flight_schedule_id" : 1 ,
                         "seat_name"          : "이코노미"
                     }
@@ -192,9 +191,8 @@ class ReservationTest(TestCase):
             access_token = jwt.encode({'user_id' : 1 }, SECRET_KEY, ALGORITHM)
 
             response     = client.post("/users/reservation",json.dumps(data), content_type='application/json' ,HTTP_Authorization = access_token)
-            
-            passenger_1= PassengerInformation.objects.get(id=1)
-            passenger_2= PassengerInformation.objects.get(id=2)
+            passenger_1= PassengerInformation.objects.get(id=5)
+            passenger_2= PassengerInformation.objects.get(id=6)
             
             saved_test_data = {      
                     'total_price' : User.objects.get(id=1).mileage ,
@@ -207,7 +205,7 @@ class ReservationTest(TestCase):
                             "gender"             : passenger_1.gender , 
                             "email"              : passenger_1.email, 
                             "birth_date"         : passenger_1.birth_date, 
-                            "price"              : passenger_1.price, 
+                            "price"              : int(passenger_1.price), 
                             "reservation_id"     : passenger_1.reservation_id ,
                             "flight_schedule_id" : passenger_1.flight_schedule_id ,
                             "seat_id"            : passenger_1.seat_id
@@ -218,7 +216,7 @@ class ReservationTest(TestCase):
                             "gender"             : passenger_2.gender , 
                             "email"              : passenger_2.email, 
                             "birth_date"         : passenger_2.birth_date, 
-                            "price"              : passenger_2.price, 
+                            "price"              : int(passenger_2.price), 
                             "reservation_id"     : passenger_2.reservation_id ,
                             "flight_schedule_id" : passenger_2.flight_schedule_id ,
                             "seat_id"            : passenger_2.seat_id
@@ -228,33 +226,33 @@ class ReservationTest(TestCase):
             
             expected_data = {      
                     'total_price' :80000 ,
-
+                    
                     "passenger_informations" : 
-                    [
-                        {
-                            "first_name"         : "김", 
-                            "last_name"          : "근성1",  
-                            "gender"             : "남" , 
-                            "email"              : "email1@naver.com", 
-                            "birth_date"         : "1984.08.04", 
-                            "price"              : 10000, 
-                            "reservation_id"     : 1 ,
-                            "flight_schedule_id" : 1,
-                            "seat_id"            : 1
-                        },
-                        {
-                            "first_name"         : "김", 
-                            "last_name"          : "근성2",  
-                            "gender"             : "여" , 
-                            "email"              : "email2@naver.com", 
-                            "birth_date"         : "1984.08.04", 
-                            "price"              : 10000, 
-                            "reservation_id"     : 1 ,
-                            "flight_schedule_id" : 1,
-                            "seat_id"            : 1
-                        }
-                    ]
-                }  
+                            [
+                                {
+                                    'first_name': '김', 
+                                    'last_name': '근성1', 
+                                    'gender': '남', 
+                                    'email': 'email1@naver.com', 
+                                    'birth_date': '1984.08.04', 
+                                    'price': 10000, 
+                                    'reservation_id': 2, 
+                                    'flight_schedule_id': 1, 
+                                    'seat_id': 1
+                                }, 
+                                {
+                                    'first_name': '김', 
+                                'last_name': '근성2',
+                                'gender': '여', 
+                                'email': 'email2@naver.com', 
+                                'birth_date': '1984.08.04', 
+                                'price': 10000, 
+                                'reservation_id': 2, 
+                                'flight_schedule_id': 1, 
+                                'seat_id': 1
+                                }
+                            ]
+                    }
 
             self.assertEqual(response.status_code, 201)
             self.assertEqual(response.json(), {"message":'success'})
@@ -299,3 +297,164 @@ class ReservationTest(TestCase):
             self.assertEqual(response.status_code, 400)
             self.assertEqual(response.json(), {"message" : "KEYERROR"})
             
+class ReservationHistoryTest(TestCase):
+    def setUp(self):                        
+        User.objects.create(
+            id              = 1,
+            kakao_id        = 12345,
+            kakao_nickname  = '김근성',
+            email           = '600gstars@yahoo.co.kr',
+            mileage         = 100000
+        )
+        departure_planet= Planet.objects.create(
+            name ='지구', 
+            code = "ETH"
+            )
+        arrival_planet = Planet.objects.create(
+            name ='달',   
+            code = "MON"
+            )
+
+        Seat.objects.create(
+            id   = 1,
+            type = "이코노미",
+            price_ratio = 100
+            )
+        Seat.objects.create(
+            id   = 2,
+            type = "비즈니스",
+            price_ratio = 150
+            )
+        
+        Flight.objects.create(
+            id   = 1,
+            name ="출퇴근 우주선"
+            )
+        Flight.objects.create(
+            id   = 2,
+            name ="초호화 우주선"
+            )
+       
+        departure_datetime = datetime.strptime('2023-03-18 9:00:00', '%Y-%m-%d %H:%M:%S')
+        arrive_datetime    = datetime.strptime('2023-03-18 12:00:00', '%Y-%m-%d %H:%M:%S')
+        
+        FlightSchedule.objects.create(
+            id                 = 1,
+            departure_datetime = departure_datetime, 
+            arrival_datetime   = arrive_datetime,
+            duration           = 2,
+            default_price      = 10000,
+            flight_id          = 1,
+            arrival_planet     = arrival_planet,
+            departure_planet   = departure_planet
+        )
+        
+        reservation = Reservation.objects.create(
+            id      = 1,
+            user_id = 1
+        )
+
+        PassengerInformation.objects.create(
+            id = 1,
+            first_name         = "김",
+            last_name          = '마이1',
+            gender             = '남',
+            email              = 'email1@naver.com',
+            birth_date         = '1995-03-07',
+            price              = 10000,
+            reservation        = reservation,
+            flight_schedule_id = 1,
+            seat_id            = 1
+        )
+        PassengerInformation.objects.create(
+            id = 2,
+            first_name         = "김",
+            last_name          = '마이2',
+            gender             = '남',
+            email              = 'email2@naver.com',
+            birth_date         = '1995-03-07',
+            price              = 10000,
+            reservation        = reservation,
+            flight_schedule_id = 1,
+            seat_id            = 1
+        )
+        PassengerInformation.objects.create(
+            id = 3,
+            first_name         = "김",
+            last_name          = '마이3',
+            gender             = '남',
+            email              = 'email1@naver.com',
+            birth_date         = '1995-03-07',
+            price              = 10000,
+            reservation        = reservation,
+            flight_schedule_id = 1,
+            seat_id            = 1
+        )
+        PassengerInformation.objects.create(
+            id = 4,
+            first_name         = "김",
+            last_name          = '마이4',
+            gender             = '남',
+            email              = 'email1@naver.com',
+            birth_date         = '1995-03-07',
+            price              = 10000,
+            reservation        = reservation,
+            flight_schedule_id = 1,
+            seat_id            = 1
+        )
+
+        
+    def tearDown(self):                     
+        User.objects.all().delete()
+        Reservation.objects.all().delete()
+        PassengerInformation.objects.all().delete()
+        Planet.objects.all().delete()
+        Seat.objects.all().delete()
+        Flight.objects.all().delete()
+        FlightSchedule.objects.all().delete()
+        Reservation.objects.all().delete()
+        PassengerInformation.objects.all().delete()
+
+    def test_mypage_sucess(self):  
+
+            client = Client()                             
+            
+            expected_data=[
+                    {
+                        'reservation_id': 1, 
+                        'seat': 
+                            {
+                                'seat_type': '이코노미', 
+                                'seat_number': 4
+                            }, 
+                        'total_price': 40000, 
+                        'flight_schedule': 
+                            {
+                                'departure_datetime': '2023-03-18 09:00', 
+                                'arrival_datetime': '2023-03-18 12:00', 
+                                'duration': 2, 
+                                'departure_planet_name': '지구', 
+                                'departure_planet_code': 'ETH', 
+                                'arrival_planet_name': '달', 
+                                'arrival_planet_code': 'MON'
+                            }
+                    }
+                ]
+                    
+            access_token = jwt.encode({'user_id' : 1 }, SECRET_KEY, ALGORITHM)
+     
+            response     = client.get("/users/mypage", HTTP_Authorization = access_token)
+            
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()['data'],expected_data )
+    
+    def test_mypage_fail(self):  
+
+            client = Client()                             
+                    
+            access_token = jwt.encode({'user_id' : 2 }, SECRET_KEY, ALGORITHM)
+     
+            response     = client.get("/users/mypage", HTTP_Authorization = access_token)
+            
+            self.assertEqual(response.status_code, 401)
+            self.assertEqual(response.json(), {"message" : "INVALID_USER"})
