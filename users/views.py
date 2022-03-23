@@ -96,33 +96,37 @@ class ReservationHistoryView(View):
                 'passengerinformation_set__seat',
                 'passengerinformation_set__flight_schedule__arrival_planet',
                 'passengerinformation_set__flight_schedule__departure_planet'
-                )
+            )
 
             for reservation in user_reservations:
                 passenger_informations = reservation.passengerinformation_set.filter(reservation_id=reservation.id)
                 
-                reservation_information = {}
+                a = passenger_informations.first()
+
+                reservation_information = {
+
+                }
 
                 reservation_information['reservation_id'] = reservation.id
                 
                 reservation_information['seat'] = {
-                    'seat_type'   : passenger_informations[0].seat.type,
-                    'seat_number' : len(passenger_informations)
+                    'seat_type'   : a.seat.type,
+                    'seat_number' : passenger_informations.count()
                 }
                 
-                reservation_information['total_price'] = int(passenger_informations.aggregate(Sum("price"))['price__sum'])
+                reservation_information['total_price'] = int(passenger_informations.aggregate(totl_price=Sum("price"))["total_price"])
                 
-                departure_datetime = str(passenger_informations[0].flight_schedule.departure_datetime).split(':')
-                arrival_datetime   = str(passenger_informations[0].flight_schedule.arrival_datetime).split(':')
+                departure_datetime = str(a.flight_schedule.departure_datetime).split(':')
+                arrival_datetime   = str(a.flight_schedule.arrival_datetime).split(':')
                 
                 reservation_information['flight_schedule'] = {
                     'departure_datetime'    : departure_datetime[0]+':'+departure_datetime[1],
                     'arrival_datetime'      : arrival_datetime[0]+':'+arrival_datetime[1],
-                    'duration'              : passenger_informations[0].flight_schedule.duration,
-                    'departure_planet_name' : passenger_informations[0].flight_schedule.departure_planet.name,
-                    'departure_planet_code' : passenger_informations[0].flight_schedule.departure_planet.code,
-                    'arrival_planet_name'   : passenger_informations[0].flight_schedule.arrival_planet.name,
-                    'arrival_planet_code'   : passenger_informations[0].flight_schedule.arrival_planet.code,
+                    'duration'              : a.flight_schedule.duration,
+                    'departure_planet_name' : a.flight_schedule.departure_planet.name,
+                    'departure_planet_code' : a.flight_schedule.departure_planet.code,
+                    'arrival_planet_name'   : a.flight_schedule.arrival_planet.name,
+                    'arrival_planet_code'   : a.flight_schedule.arrival_planet.code,
                 }
                 
                 result.append(reservation_information)    
