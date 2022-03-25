@@ -30,7 +30,7 @@
 ![image](https://user-images.githubusercontent.com/67942847/160069065-059d796e-4c05-4232-bf81-a15bbfe97123.png)
 
 ## User flow
-![image](https://user-images.githubusercontent.com/67942847/160069162-775f05c8-82e2-42e2-a0cb-bcf1df82fbfa.png)
+![image](https://user-images.githubusercontent.com/67942847/160073025-11ee9558-b015-427b-955b-393720ad8343.png)
 
 ## 초기기획 및 구현 목표
 * 짧은 기간동안 기능구현에 집중해야하므로 일단 최소기능을 우선 구현하는 것으로 목표를 설정
