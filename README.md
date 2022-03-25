@@ -7,7 +7,7 @@
 
 ---
 # Target site
-![Uploading image.png…]()
+![image](https://user-images.githubusercontent.com/67942847/160072678-e0fa726b-41d0-4dd2-9716-22da13406d1d.png)
 
 * ## 사이트 소개  
     [Site Link](https://www.koreanair.com/kr/ko)
