@@ -1,13 +1,13 @@
-![header](https://capsule-render.vercel.app/api?type=waving&color=FFCC51&height=100&section=header&fontSize=90)
+![header](https://capsule-render.vercel.app/api?type=waving&color=#154D9E&height=100&section=header&fontSize=90)
 
+![image](https://user-images.githubusercontent.com/67942847/160072501-22b71534-b425-43a3-9cba-8e5f5a381b40.png)
 
-<img src="https://user-images.githubusercontent.com/61664975/158049694-3f5432ba-2a22-4fe1-b4d7-2dd5b4065892.jpg">
 
 <br><br>
 
 ---
 # Target site
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb0HNcx%2FbtrvKJPkmQP%2FgPYcHkiXc5NtsM5VbeqiaK%2Fimg.png">
+![Uploading image.png…]()
 
 * ## 사이트 소개  
     [Site Link](https://www.koreanair.com/kr/ko)
